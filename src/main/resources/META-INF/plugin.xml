@@ -6,14 +6,26 @@
     <!-- Product and plugin compatibility requirements -->
     <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
 
+    <description><![CDATA[
+      Plugin written in Kotlin for Kotlin Native to help
+      developer identify potential problems with mutation of frozen instances
+    ]]></description>
+
+    <change-notes><![CDATA[
+      Release notes : Object and Companion object variables check
+    ]]>
+    </change-notes>
+
+    <!-- Code Inspection Component  -->
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.igrrik.kmmfrozeninspection.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.igrrik.kmmfrozeninspection.services.MyProjectService"/>
+        <localInspection language="kotlin"
+                         displayName="Igor's inspection"
+                         groupName="Igor's group"
+                         groupPath="SDK"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.igrrik.kmmfrozeninspection.ObjectWithVariablesInspection"/>
     </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.igrrik.kmmfrozeninspection.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
 </idea-plugin>
