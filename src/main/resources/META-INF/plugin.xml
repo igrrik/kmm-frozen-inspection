@@ -14,18 +14,18 @@
     ]]></description>
 
     <change-notes><![CDATA[
-      Release notes : Object and Companion object variables check
+      Release notes : Object, Companion object and Enum variables check
     ]]>
     </change-notes>
 
     <!-- Code Inspection Component  -->
     <extensions defaultExtensionNs="com.intellij">
         <localInspection language="kotlin"
-                         displayName="Igor's inspection"
-                         groupName="Igor's group"
+                         displayName="Variables in frozen types"
+                         groupName="Kotlin/Native inspection"
                          groupPath="SDK"
                          enabledByDefault="true"
                          level="WARNING"
-                         implementationClass="com.github.igrrik.kmmfrozeninspection.ObjectWithVariablesInspection"/>
+                         implementationClass="com.github.igrrik.kmmfrozeninspection.NativeVariablesInFrozenTypesInspection"/>
     </extensions>
 </idea-plugin>
