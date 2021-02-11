@@ -27,5 +27,13 @@
                          enabledByDefault="true"
                          level="WARNING"
                          implementationClass="com.github.igrrik.kmmfrozeninspection.NativeVariablesInFrozenTypesInspection"/>
+
+        <localInspection language="kotlin"
+                         displayName="Worker capturing outer scope"
+                         groupName="Kotlin/Native inspection"
+                         groupPath="SDK"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.igrrik.kmmfrozeninspection.NativeWorkerCapturingOuterScopeInspection"/>
     </extensions>
 </idea-plugin>
