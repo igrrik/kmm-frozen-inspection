@@ -3,6 +3,7 @@ package com.github.igrrik.kmmfrozeninspection
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import org.jetbrains.kotlin.idea.inspections.AbstractKotlinInspection
 import org.jetbrains.kotlin.idea.intentions.callExpression
@@ -13,6 +14,7 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
+import org.jetbrains.kotlin.psi.psiUtil.isAncestor
 
 class NativeWorkerCapturingOuterScopeInspection: AbstractKotlinInspection() {
 
@@ -60,9 +62,7 @@ class NativeWorkerCapturingOuterScopeInspection: AbstractKotlinInspection() {
                 val allowedAnnotations = listOf(sharedImmutableFqName, threadLocalFqName)
 
                 loop@ for (reference in references) {
-                    val resolvedReference = reference.references
-                        .first { it is KtSimpleNameReference }
-                        .resolve() ?: continue@loop
+                    val resolvedReference = reference.resolveReference() ?: continue@loop
 
                     val property = resolvedReference as? KtProperty ?: continue@loop
 
@@ -74,7 +74,7 @@ class NativeWorkerCapturingOuterScopeInspection: AbstractKotlinInspection() {
                                 ProblemHighlightType.WARNING
                             )
                         }
-                    } else if (property.parent != parentBlock) {
+                    } else if (!parentBlock.isAncestor(property.originalElement)) {
                         holder.registerProblem(
                             reference,
                             "Capturing outer scope will cause exception",
@@ -85,12 +85,14 @@ class NativeWorkerCapturingOuterScopeInspection: AbstractKotlinInspection() {
             }
 
             private fun KtCallExpression.isWorkerExecuteFun(): Boolean {
-                val resolvedReference = calleeExpression
-                    ?.references
-                    ?.first { it is KtSimpleNameReference }
-                    ?.resolve() ?: return false
-
+                val resolvedReference = calleeExpression?.resolveReference() ?: return false
                 return resolvedReference.getKotlinFqName() == workerExecuteFqName
+            }
+
+            private fun KtExpression.resolveReference(): PsiElement? {
+                return references
+                    .first { it is KtSimpleNameReference }
+                    .resolve()
             }
         }
     }
